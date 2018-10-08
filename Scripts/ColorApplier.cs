@@ -32,9 +32,9 @@ public class ColorApplier : MonoBehaviour {
                 return 0;
             int c = Counter.RuntimeValue - offset;
             if (c < Counter.MinValue)
-                c = Counter.MinValue;
+                c = (int)Counter.MinValue;
             if (c > Counter.MaxValue)
-                c = Counter.MaxValue;
+                c = (int)Counter.MaxValue;
             return c;
         }
     }
