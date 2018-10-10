@@ -30,6 +30,9 @@ public class GradientColorEditor : Editor
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
+
+        GUILayout.Space(10);
+        GUILayout.Label("Mapped Color Preview");
         percent = EditorGUILayout.Slider(percent, 0, 1);
         Rect r = EditorGUILayout.BeginVertical();
         GUI.Box(r,"",ColorPreviewUtils.InitStyles(gradient.GetMappedColor(percent)));

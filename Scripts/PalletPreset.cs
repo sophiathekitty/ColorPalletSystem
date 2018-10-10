@@ -6,6 +6,7 @@ using UnityEngine;
 /// </summary>
 [CreateAssetMenu(menuName = "Pallets/Pallet", fileName = "Pallet Preset")]
 public class PalletPreset : ScriptableObject {
+    public PalletDefinition Definition;
     /// <summary>
     /// array of color gradient layers
     /// </summary>

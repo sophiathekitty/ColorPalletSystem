@@ -32,12 +32,23 @@ public class PalletPresetEditor : Editor
     }
     private void OnEnable()
     {
-        GradientsList = new ReorderableList(Pallet.gradientColors, typeof(List<GradientColorSetting>), true, true, false, false);
-        GradientsList.drawHeaderCallback = OnDrawHeader;
-        GradientsList.drawElementCallback = OnDrawElement;
-        GradientsList.elementHeightCallback = GetElementHeight;
-        GradientsList.onReorderCallback = ListUpdated;
-//        GradientsList.onAddCallback = OnAddElement;
+        GradientsList = new ReorderableList(Pallet.gradientColors,
+            typeof(List<GradientColorSetting>),
+            true, true, false, false)
+        {
+            drawHeaderCallback = OnDrawHeader,
+            drawElementCallback = OnDrawElement,
+            elementHeightCallback = GetElementHeight,
+            onReorderCallback = ListUpdated
+        };
+
+        if(Pallet.Definition != null)
+        {
+            while (Pallet.gradientColors.Count > Pallet.Definition.layers.Count)
+                Pallet.gradientColors.RemoveAt(Pallet.gradientColors.Count - 1);
+            while (Pallet.gradientColors.Count < Pallet.Definition.layers.Count)
+                Pallet.gradientColors.Add(null);
+        }
     }
 
     private void ListUpdated(ReorderableList list)
@@ -47,16 +58,26 @@ public class PalletPresetEditor : Editor
 
     private float GetElementHeight(int index)
     {
-        return 56;
+        return 66;
     }
 
     private void OnDrawElement(Rect rect, int index, bool isActive, bool isFocused)
     {
+        Rect r1 = new Rect(rect.x, rect.y + 18, rect.width, rect.height - 38);
         if(Pallet.gradientColors[index] != null)
-            GUI.Box(rect, "", ColorPreviewUtils.InitStyles(Pallet.gradientColors[index].GetMappedColor(percent)));
-        Pallet.gradientColors[index] = (GradientColorSetting)EditorGUI.ObjectField(
-            new Rect(rect.position, new Vector2(rect.width, 16)),
-            Pallet.gradientColors[index], typeof(GradientColorSetting), false);
+            GUI.Box(r1, "", ColorPreviewUtils.InitStyles(Pallet.gradientColors[index].GetMappedColor(percent)));
+        if (Pallet.Definition != null)
+        {
+            GUI.Label(new Rect(rect.position, new Vector2(rect.width / 2, 16)), Pallet.Definition.layers[index].name);
+            Pallet.gradientColors[index] = (GradientColorSetting)EditorGUI.ObjectField(
+                new Rect(rect.x + rect.width/2,rect.y, rect.width/2, 16),
+                Pallet.gradientColors[index], typeof(GradientColorSetting), false);
+        }
+        else
+            Pallet.gradientColors[index] = (GradientColorSetting)EditorGUI.ObjectField(
+                new Rect(rect.position, new Vector2(rect.width, 16)),
+                Pallet.gradientColors[index], typeof(GradientColorSetting), false);
+
     }
 
     private void OnDrawHeader(Rect rect)

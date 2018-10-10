@@ -10,6 +10,11 @@ public class PalletDatabase : ScriptableObject {
     public IntRangeVariable indexIntRange;
     public IntVariable indexIntVariable;
     #endregion
+
+    /// <summary>
+    /// the definition of the pallet layers to be used
+    /// </summary>
+    public PalletDefinition Definition;
     /// <summary>
     /// holds the index value
     /// </summary>
