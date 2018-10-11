@@ -62,11 +62,6 @@ public class PalletDatabase : ScriptableObject
     /// <returns></returns>
     public Color GetColor(float percent, int layer)
     {
-        /* // maybe see about deleting this bit of code?
-        if (indexIntRange != null || indexIntVariable != null)
-            return palletPresets[Index].GetColor(percent, layer);
-        return new Color();
-        */
         return palletPresets[Index].GetColor(percent, layer);
     }
 }
