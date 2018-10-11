@@ -16,10 +16,12 @@ public class PalletDatabase : ScriptableObject
     /// the definition of the pallet layers to be used
     /// </summary>
     public PalletDefinition Definition;
+
     /// <summary>
     /// holds the index value
     /// </summary>
     private int index;
+    
     /// <summary>
     /// the index of the preset to use
     /// </summary>
@@ -46,10 +48,12 @@ public class PalletDatabase : ScriptableObject
             index = value;
         }
     }
+    
     /// <summary>
     /// array of pallet presets
     /// </summary>
     public List<PalletPreset> palletPresets;
+    
     /// <summary>
     /// gets the color from the database
     /// </summary>
