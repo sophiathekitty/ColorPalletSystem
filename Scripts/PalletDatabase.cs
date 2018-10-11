@@ -5,7 +5,8 @@ using UnityEngine;
 /// database of gradient pallets
 /// </summary>
 [CreateAssetMenu(menuName ="Pallets/Database", fileName = "Pallet Database")]
-public class PalletDatabase : ScriptableObject {
+public class PalletDatabase : ScriptableObject 
+{
     #region SharedVariableSaveSystem
     public IntRangeVariable indexIntRange;
     public IntVariable indexIntVariable;
@@ -19,10 +20,6 @@ public class PalletDatabase : ScriptableObject {
     /// holds the index value
     /// </summary>
     private int index;
-    /// <summary>
-    /// array of pallet presets
-    /// </summary>
-    public List<PalletPreset> palletPresets;
     /// <summary>
     /// the index of the preset to use
     /// </summary>
@@ -49,6 +46,10 @@ public class PalletDatabase : ScriptableObject {
             index = value;
         }
     }
+    /// <summary>
+    /// array of pallet presets
+    /// </summary>
+    public List<PalletPreset> palletPresets;
     /// <summary>
     /// gets the color from the database
     /// </summary>
