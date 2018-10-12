@@ -34,7 +34,7 @@ public class PalletPresetEditor : Editor
             Material layerMat = new Material(ColorPreviewUtils.defaultMat);
             layerMat.color = Pallet.GetColor(percent,i);
             if(Pallet.Definition.layers[i] != null && Pallet.Definition.layers[i].icon != null)
-                EditorGUI.DrawPreviewTexture(rect,Pallet.Definition.layers[i].icon.texture,layerMat,ScaleMode.ScaleToFit); // not transparent? D:
+                EditorGUI.DrawPreviewTexture(rect,Pallet.Definition.layers[i].icon.texture,layerMat,ScaleMode.ScaleToFit);
         }
         GUILayout.Space(200);
         EditorGUILayout.EndHorizontal();

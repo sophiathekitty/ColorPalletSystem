@@ -36,7 +36,7 @@ public class PallatDatabaseEditor : Editor
                 Material layerMat = new Material(ColorPreviewUtils.defaultMat);
                 layerMat.color = Database.palletPresets[GradientsList.index].GetColor(percent,i);
                 if(Database.Definition.layers[i] != null && Database.Definition.layers[i].icon != null)
-                    EditorGUI.DrawPreviewTexture(rect,Database.Definition.layers[i].icon.texture,layerMat,ScaleMode.ScaleToFit); // not transparent? D:
+                    EditorGUI.DrawPreviewTexture(rect,Database.Definition.layers[i].icon.texture,layerMat,ScaleMode.ScaleToFit);
             }
             GUILayout.Space(200);
             EditorGUILayout.EndHorizontal();
