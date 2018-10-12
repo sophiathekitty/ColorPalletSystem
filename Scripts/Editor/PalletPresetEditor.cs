@@ -29,6 +29,15 @@ public class PalletPresetEditor : Editor
     {
         //base.OnInspectorGUI();
         GradientsList.DoLayoutList();
+        Rect rect = EditorGUILayout.BeginVertical();
+        for(int i = 0; i < Pallet.Definition.layers.Count; i++){
+            Material layerMat = new Material(ColorPreviewUtils.defaultMat);
+            layerMat.color = Pallet.GetColor(percent,i);
+            if(Pallet.Definition.layers[i] != null && Pallet.Definition.layers[i].icon != null)
+                EditorGUI.DrawPreviewTexture(rect,Pallet.Definition.layers[i].icon.texture,layerMat,ScaleMode.ScaleToFit); // not transparent? D:
+        }
+        GUILayout.Space(200);
+        EditorGUILayout.EndHorizontal();
     }
     private void OnEnable()
     {

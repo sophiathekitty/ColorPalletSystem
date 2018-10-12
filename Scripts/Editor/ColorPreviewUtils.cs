@@ -2,7 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ColorPreviewUtils  {
+public class ColorPreviewUtils  
+{
+    /// <summary>
+    /// hopefully this will let me do transparent images in the inspector
+    /// </summary>
+    /// <returns></returns>
+    public static Material defaultMat = new Material(Shader.Find("Sprites/Default"));
 
     /// <summary>
     /// generate style

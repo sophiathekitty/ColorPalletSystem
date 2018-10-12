@@ -9,20 +9,38 @@ using UnityEngine;
 public class PallatDatabaseEditor : Editor
 {
     /// <summary>
-    /// reorderable list of pallets
+    /// reorderable list of pallets, and layers
     /// </summary>
     private ReorderableList GradientsList, Layers;
-    private PalletDatabase database {  get { return target as PalletDatabase; } }
+
+    /// <summary>
+    /// gets the target as a PalletDatabase
+    /// </summary>
+    /// <value>target</value>
+    private PalletDatabase Database {  get { return target as PalletDatabase; } }
     private float percent;
     public override void OnInspectorGUI()
     {
         //base.OnInspectorGUI();
-        if (database.Definition != null)
+        if (Database.Definition != null)
             Layers.DoLayoutList();
         else
-            database.Definition = EditorGUILayout.ObjectField(database.Definition, typeof(PalletDefinition), false) as PalletDefinition;
+            Database.Definition = EditorGUILayout.ObjectField(Database.Definition, typeof(PalletDefinition), false) as PalletDefinition;
         EditorGUILayout.Space();
         GradientsList.DoLayoutList();
+        // trying to draw layer preview images stacked on each other
+        // so that it can show how each layer will looked once color is applied.
+        if(GradientsList.index >= 0){
+            Rect rect = EditorGUILayout.BeginVertical();
+            for(int i = 0; i < Database.Definition.layers.Count; i++){
+                Material layerMat = new Material(ColorPreviewUtils.defaultMat);
+                layerMat.color = Database.palletPresets[GradientsList.index].GetColor(percent,i);
+                if(Database.Definition.layers[i] != null && Database.Definition.layers[i].icon != null)
+                    EditorGUI.DrawPreviewTexture(rect,Database.Definition.layers[i].icon.texture,layerMat,ScaleMode.ScaleToFit); // not transparent? D:
+            }
+            GUILayout.Space(200);
+            EditorGUILayout.EndHorizontal();
+        }
     }
     private void OnEnable()
     {
@@ -32,14 +50,14 @@ public class PallatDatabaseEditor : Editor
 
     private void SetupDefinitionList()
     {
-        Layers = new ReorderableList(database.Definition.layers, typeof(List<PalletDefinition.PalletLayer>), true, true, true, true)
+        Layers = new ReorderableList(Database.Definition.layers, typeof(List<PalletDefinition.PalletLayer>), true, true, true, true)
         {
             drawHeaderCallback = (Rect rect) =>
             {
                 Rect r1 = new Rect(rect.position, new Vector2(rect.width / 3, rect.height));
                 Rect r2 = new Rect(rect.x + rect.width / 3, rect.y, rect.width / 3 * 2, rect.height);
                 GUI.Label(r1, "Layers");
-                database.Definition = EditorGUI.ObjectField(r2,database.Definition, typeof(PalletDefinition), false) as PalletDefinition;
+                Database.Definition = EditorGUI.ObjectField(r2,Database.Definition, typeof(PalletDefinition), false) as PalletDefinition;
             },
 
             drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
@@ -49,27 +67,27 @@ public class PallatDatabaseEditor : Editor
                 float twoThirdsWidth = rect.width - 60;
                 Rect r1 = new Rect(rect.position, new Vector2(twoThirdsWidth - 10, 18));
                 Rect r2 = new Rect(rect.x + twoThirdsWidth, rect.y, oneThirdWidth, rect.height);
-                database.Definition.layers[index].name = EditorGUI.TextField(r1, database.Definition.layers[index].name);
-                database.Definition.layers[index].icon = EditorGUI.ObjectField(r2, database.Definition.layers[index].icon, typeof(Sprite), false) as Sprite;
+                Database.Definition.layers[index].name = EditorGUI.TextField(r1, Database.Definition.layers[index].name);
+                Database.Definition.layers[index].icon = EditorGUI.ObjectField(r2, Database.Definition.layers[index].icon, typeof(Sprite), false) as Sprite;
             },
 
             elementHeightCallback = (int index) => { return 20; },
 
             onReorderCallback = (ReorderableList list) =>
             {
-                EditorUtility.SetDirty(database);
-                EditorUtility.SetDirty(database.palletPresets[list.index]);
+                EditorUtility.SetDirty(Database);
+                EditorUtility.SetDirty(Database.Definition);
             },
 
             onSelectCallback = (ReorderableList list) => { /* update preview */ },
+
             onAddCallback = (ReorderableList list) => { list.list.Add(new PalletDefinition.PalletLayer()); }
         };
     }
 
-
     private void SetupGradientList()
     { 
-        GradientsList = new ReorderableList(database.palletPresets, typeof(List<PalletPreset>), true, true, true, true)
+        GradientsList = new ReorderableList(Database.palletPresets, typeof(List<PalletPreset>), true, true, true, true)
         {
             drawHeaderCallback = (Rect rect) =>
             {
@@ -81,26 +99,28 @@ public class PallatDatabaseEditor : Editor
 
             drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
             {
-                if (database.Definition != null && database.palletPresets[index] != null)
-                    database.palletPresets[index].Definition = database.Definition;
+                if (Database.Definition != null && Database.palletPresets[index] != null)
+                    Database.palletPresets[index].Definition = Database.Definition;
 
-                if (database.palletPresets[index] != null)
-                    DrawPalletList(rect, database.palletPresets[index].gradientColors);
-                database.palletPresets[index] = (PalletPreset)EditorGUI.ObjectField(
+                if (Database.palletPresets[index] != null)
+                    DrawPalletList(rect, Database.palletPresets[index].gradientColors);
+                
+                Database.palletPresets[index] = (PalletPreset)EditorGUI.ObjectField(
                     new Rect(rect.position, new Vector2(rect.width, 16)),
-                    database.palletPresets[index], typeof(PalletPreset), false);
+                    Database.palletPresets[index], typeof(PalletPreset), false);
             },
 
             elementHeightCallback = (int index) => { return 56; },
 
             onReorderCallback = (ReorderableList list) => 
             {
-                EditorUtility.SetDirty(database);
-                EditorUtility.SetDirty(database.palletPresets[list.index]);
+                EditorUtility.SetDirty(Database);
+                EditorUtility.SetDirty(Database.palletPresets[list.index]);
             },
 
             onSelectCallback = (ReorderableList list) => { /* update preview */ },
-            onAddCallback = (ReorderableList list) => { database.palletPresets.Add(null); }
+
+            onAddCallback = (ReorderableList list) => { Database.palletPresets.Add(null); }
         };
     }
 
